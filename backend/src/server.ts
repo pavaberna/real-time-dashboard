@@ -3,7 +3,7 @@ import { createServer } from "http";
 import { WebSocketServer, WebSocket } from "ws";
 
 const app = express();
-const PORT = 5000;
+const PORT = 3000;
 
 const server = createServer(app);
 
@@ -14,12 +14,13 @@ app.get("/", (req, res) => {
 });
 
 const binanceSocket = new WebSocket(
-  "wss://stream.binance.com:9443/ws/btcusdt@ticker",
+  "wss://stream.binance.com:9443/stream?streams=btcusdt@ticker/ethusdt@ticker/solusdt@ticker/bnbusdt@ticker",
 );
 
 binanceSocket.on("message", (data) => {
   try {
-    const binanceData = JSON.parse(data.toString());
+    const rawPayload = JSON.parse(data.toString());
+    const binanceData = rawPayload.data;
 
     const mappedData = {
       symbol: binanceData.s,
@@ -45,6 +46,6 @@ binanceSocket.on("error", (err) => {
   console.error("Binance WebSocket error occurred:", err);
 });
 
-app.listen(PORT, () => {
+server.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
 });

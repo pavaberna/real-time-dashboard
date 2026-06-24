@@ -8,17 +8,31 @@ export const useWebSocket = (url: string) => {
   );
 
   useEffect(() => {
+    let isUnmounted = false;
     const socket = new WebSocket(url);
 
     socket.onopen = () => {
+      if (isUnmounted) {
+        socket.close();
+        return;
+      }
+
       setConnectionData(true);
     };
 
     socket.onerror = (error) => {
+      if (isUnmounted) {
+        return;
+      }
+
       console.error("WebSocket error on frontend:", error);
     };
 
     socket.onclose = () => {
+      if (isUnmounted) {
+        return;
+      }
+
       setConnectionData(false);
     };
 
@@ -33,7 +47,14 @@ export const useWebSocket = (url: string) => {
     };
 
     return () => {
-      socket.close();
+      isUnmounted = true;
+      socket.onmessage = null;
+      socket.onerror = null;
+      socket.onclose = null;
+
+      if (socket.readyState === WebSocket.OPEN) {
+        socket.close();
+      }
     };
   }, [url, updateCoinData, setConnectionData]);
 };
