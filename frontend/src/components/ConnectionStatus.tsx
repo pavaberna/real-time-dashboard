@@ -6,13 +6,21 @@ export const ConnectionStatus = () => {
   return (
     <div>
       <span
-        className={`flex items-center gap-2 p-2 rounded-lg text-sm font-semibold w-fit mb-4 ${
+        className={`flex items-center gap-2 py-1.5 px-4 rounded-full text-xs font-semibold font-orbitron tracking-wider border transition-all duration-300 w-fit ${
           isConnected
-            ? "bg-green-100 text-green-800"
-            : "bg-red-100 text-red-800"
+            ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20 shadow-[0_0_15px_rgba(16,185,129,0.1)]"
+            : "bg-rose-500/10 text-rose-400 border-rose-500/20 shadow-[0_0_15px_rgba(244,63,94,0.1)]"
         }`}
       >
-        {isConnected ? "Connected" : "Disconnected"}
+        <span
+          className={`w-1.5 h-1.5 rounded-full animate-pulse ${
+            isConnected
+              ? "bg-emerald-400 shadow-[0_0_6px_#10b981]"
+              : "bg-rose-400 shadow-[0_0_6px_#f43f5e]"
+          }`}
+        />
+
+        {isConnected ? "CONNECTED" : "DISCONNECTED"}
       </span>
     </div>
   );

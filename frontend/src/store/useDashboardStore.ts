@@ -5,14 +5,29 @@ export const useDashboardStore = create<DashboardData>((set) => ({
   coins: {},
   isConnected: false,
   watchlist: [],
+  selectedSymbol: null,
 
-  updateCoinData: (newData: CryptoData) =>
-    set((state) => ({
-      coins: {
-        ...state.coins,
-        [newData.symbol]: newData,
-      },
-    })),
+  updateCoinData: (newData: Omit<CryptoData, "history">) =>
+    set((state) => {
+      const existingHistory = state.coins[newData.symbol]?.history || [];
+
+      const newHistoryPoint = {
+        price: newData.price,
+        timestamp: newData.timestamp,
+      };
+
+      const updatedHistory = [...existingHistory, newHistoryPoint].slice(-20);
+
+      return {
+        coins: {
+          ...state.coins,
+          [newData.symbol]: {
+            ...newData,
+            history: updatedHistory,
+          },
+        },
+      };
+    }),
 
   setConnectionStatus: (status: boolean) =>
     set({
@@ -27,6 +42,12 @@ export const useDashboardStore = create<DashboardData>((set) => ({
         .map((coin) => coin.symbol);
 
       return { watchlist: top3Symbols };
+    });
+  },
+
+  setSelectedSymbol: (symbol: string | null) => {
+    set({
+      selectedSymbol: symbol,
     });
   },
 }));

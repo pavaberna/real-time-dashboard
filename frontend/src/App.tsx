@@ -1,8 +1,10 @@
 import { useEffect } from "react";
-import { ConnectionStatus } from "./components/ConnectionStatus";
 import { CryptoGrid } from "./components/CryptoGrid";
 import { useWebSocket } from "./hooks/useWebSocket";
 import { useDashboardStore } from "./store/useDashboardStore";
+import { Navbar } from "./components/Navbar";
+import { BackgroundCanvas } from "./components/BackgroundCanvas";
+import { CryptoChart } from "./components/CryptoChart";
 
 export default function App() {
   useWebSocket("ws://localhost:3000");
@@ -20,10 +22,18 @@ export default function App() {
   }, [coins, watchlist, initializeTop3Watchlist]);
 
   return (
-    <div className="p-5 font-sans flex justify-center items-center flex-col bg-gray-100">
-      <h1 className="text-2xl font-bold mb-4">Crypto Dashboard</h1>
-      <ConnectionStatus />
-      <CryptoGrid />
+    <div className="text-slate-100 font-sans min-h-screen relative overflow-x-hidden selection:bg-cyan-500 selection:text-black">
+      <BackgroundCanvas />
+
+      <div className="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] bg-cyan-500/5 rounded-full blur-[120px] pointer-events-none" />
+      <div className="absolute top-[40%] right-[-10%] w-[600px] h-[600px] bg-purple-500/5 rounded-full blur-[140px] pointer-events-none" />
+
+      <Navbar />
+
+      <main className="relative z-10 pt-24 pb-20">
+        <CryptoGrid />
+        <CryptoChart />
+      </main>
     </div>
   );
 }

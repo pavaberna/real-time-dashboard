@@ -1,3 +1,8 @@
+export interface HistoricalData {
+  price: number;
+  timestamp: number;
+}
+
 export interface CryptoData {
   symbol: string;
   price: number;
@@ -6,13 +11,16 @@ export interface CryptoData {
   low: number;
   volume: number;
   timestamp: number;
+  history: HistoricalData[];
 }
 
 export interface DashboardData {
   coins: Record<string, CryptoData>;
   isConnected: boolean;
   watchlist: string[];
-  updateCoinData: (data: CryptoData) => void;
+  selectedSymbol: string | null;
+  updateCoinData: (data: Omit<CryptoData, "history">) => void;
   setConnectionStatus: (isConnected: boolean) => void;
   initializeTop3Watchlist: () => void;
+  setSelectedSymbol: (symbol: string | null) => void;
 }
